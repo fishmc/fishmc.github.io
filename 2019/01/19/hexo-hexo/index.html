@@ -20,8 +20,8 @@
 <meta property="og:description" content="Java NIO 概述  原文链接 Java NIO 由以下几个核心部分组成：  Channels Buffers Selectors  虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://fishmc.github.io/img/javanio/overview-channels-buffers1.png">
-<meta property="og:image" content="http://yoursite.com/2019/01/public/img/javanio/overview-selectors.png">
-<meta property="og:updated_time" content="2019-01-19T15:45:36.187Z">
+<meta property="og:image" content="https://fishmc.github.io/img/javanio/overview-selectors.png">
+<meta property="og:updated_time" content="2019-01-19T15:47:35.126Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java NIO系列（一） Java NIO 概述">
 <meta name="twitter:description" content="Java NIO 概述  原文链接 Java NIO 由以下几个核心部分组成：  Channels Buffers Selectors  虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件">
@@ -144,7 +144,7 @@
 <p>这些Buffer覆盖了你能通过IO发送的基本数据类型：byte, short, int, long, float, double 和 char。<br>Java NIO 还有个 MappedByteBuffer，用于表示内存映射文件， 我也不打算在概述中说明。</p>
 <p><strong>Selector</strong></p>
 <p>Selector允许单线程处理多个 Channel。如果你的应用打开了多个连接（通道），但每个连接的流量都很低，使用Selector就会很方便。例如，在一个聊天服务器中。<br>这是在一个单线程中使用一个Selector处理3个Channel的图示：</p>
-<p><img src="../../public/img/javanio/overview-selectors.png" alt=""></p>
+<p><img src="https://fishmc.github.io/img/javanio/overview-selectors.png" alt=""></p>
 <p>要使用Selector，得向Selector注册Channel，然后调用它的select()方法。这个方法会一直阻塞到某个注册的通道有事件就绪。一旦这个方法返回，线程就可以处理这些事件，事件的例子有如新连接进来，数据接收等。</p>
   
 	</div>
@@ -182,21 +182,13 @@
 <nav class="article-nav clearfix">
  
  <div class="prev">
- <a href="/2019/01/19/nio-1/" title="nio-1">
+ <a href="/2019/01/19/nio-Channel/" title="Java NIO系列（二） Channel">
   <strong>上一篇：</strong><br>
   <span>
-  nio-1</span>
+  Java NIO系列（二） Channel</span>
 </a>
 </div>
 
-
-<div class="next">
-<a href="/2019/01/19/my-new-post/" title="hexo干货系列">
- <strong>下一篇：</strong><br> 
- <span>hexo干货系列
-</span>
-</a>
-</div>
 
 </nav>
 
@@ -233,11 +225,7 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/Java-nio/" title="Java nio">Java nio<sup>1</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+			<li><a href="/categories/Java-nio/" title="Java nio">Java nio<sup>2</sup></a></li>
 		  
 		
 		</ul>
@@ -250,11 +238,7 @@
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/Java-nio干货系列/" title="Java nio干货系列">Java nio干货系列<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/hexo干货系列/" title="hexo干货系列">hexo干货系列<sup>1</sup></a></li>
+				<li><a href="/tags/Java-nio干货系列/" title="Java nio干货系列">Java nio干货系列<sup>2</sup></a></li>
 			
 		
 		</ul>
@@ -264,7 +248,7 @@
   
   <div class="archiveslist">
     <p class="asidetitle"><a href="/archives">归档</a></p>
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">3</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">2</span></li></ul>
   </div>
 
 
@@ -272,7 +256,7 @@
   <div class="tagcloudlist">
     <p class="asidetitle">标签云</p>
     <div class="tagcloudlist clearfix">
-       <a href="/tags/Java-nio干货系列/" style="font-size: 10px;">Java nio干货系列</a> <a href="/tags/hexo干货系列/" style="font-size: 10px;">hexo干货系列</a>
+       <a href="/tags/Java-nio干货系列/" style="font-size: 10px;">Java nio干货系列</a>
     </div>
   </div>
 
