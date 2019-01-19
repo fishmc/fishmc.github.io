@@ -31,22 +31,22 @@
   </entry>
   
   <entry>
-    <title>Java NIO 概述</title>
+    <title>Java NIO系列（一） Java NIO 概述</title>
     <link href="http://yoursite.com/2019/01/19/hexo-hexo/"/>
     <id>http://yoursite.com/2019/01/19/hexo-hexo/</id>
     <published>2019-01-19T08:30:04.000Z</published>
-    <updated>2019-01-19T15:36:17.671Z</updated>
+    <updated>2019-01-19T15:45:36.187Z</updated>
     
-    <content type="html"><![CDATA[<blockquote><p>Java NIO系列（一） Java NIO 概述</p></blockquote><p><a href="http://tutorials.jenkov.com/java-nio/overview.html" target="_blank" rel="noopener">原文链接</a></p><p><strong>Java NIO 由以下几个核心部分组成：</strong></p><ul><li>Channels</li><li>Buffers</li><li>Selectors</li></ul><p>虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件会在单独的章节中讲到。</p><p><strong>Channel 和 Buffer</strong></p><p>基本上，所有的 IO 在NIO 中都从一个<strong>Channel</strong> 开始。Channel 有点象流。 数据可以从Channel读到Buffer中，也可以从Buffer 写到Channel中。这里有个图示：</p><p><img src="overview-channels-buffers1.png" alt=""></p><p>Channel和Buffer有好几种类型。下面是JAVA NIO中的一些主要Channel的实现：</p><ul><li>FileChannel</li><li>DatagramChannel</li><li>SocketChannel</li><li>ServerSocketChannel</li></ul><p>正如你所看到的，这些通道涵盖了UDP 和 TCP 网络IO，以及文件IO。</p><p>与这些类一起的有一些有趣的接口，但为简单起见，我尽量在概述中不提到它们。本教程其它章节与它们相关的地方我会进行解释。</p><p>以下是Java NIO里关键的Buffer实现：</p><ul><li>ByteBuffer</li><li>CharBuffer</li><li>DoubleBuffer</li><li>FloatBuffer</li><li>IntBuffer</li><li>LongBuffer</li><li>ShortBuffer</li></ul><p>这些Buffer覆盖了你能通过IO发送的基本数据类型：byte, short, int, long, float, double 和 char。<br>Java NIO 还有个 MappedByteBuffer，用于表示内存映射文件， 我也不打算在概述中说明。</p><p><strong>Selector</strong></p><p>Selector允许单线程处理多个 Channel。如果你的应用打开了多个连接（通道），但每个连接的流量都很低，使用Selector就会很方便。例如，在一个聊天服务器中。<br>这是在一个单线程中使用一个Selector处理3个Channel的图示：</p><p><img src="../../public/img/javanio/overview-selectors.png" alt=""></p><p>要使用Selector，得向Selector注册Channel，然后调用它的select()方法。这个方法会一直阻塞到某个注册的通道有事件就绪。一旦这个方法返回，线程就可以处理这些事件，事件的例子有如新连接进来，数据接收等。</p>]]></content>
+    <content type="html"><![CDATA[<blockquote><p>Java NIO 概述</p></blockquote><p><a href="http://tutorials.jenkov.com/java-nio/overview.html" target="_blank" rel="noopener">原文链接</a></p><p><strong>Java NIO 由以下几个核心部分组成：</strong></p><ul><li>Channels</li><li>Buffers</li><li>Selectors</li></ul><p>虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件会在单独的章节中讲到。</p><p><strong>Channel 和 Buffer</strong></p><p>基本上，所有的 IO 在NIO 中都从一个<strong>Channel</strong> 开始。Channel 有点象流。 数据可以从Channel读到Buffer中，也可以从Buffer 写到Channel中。这里有个图示：</p><p><img src="https://fishmc.github.io/img/javanio/overview-channels-buffers1.png" alt=""></p><p>Channel和Buffer有好几种类型。下面是JAVA NIO中的一些主要Channel的实现：</p><ul><li>FileChannel</li><li>DatagramChannel</li><li>SocketChannel</li><li>ServerSocketChannel</li></ul><p>正如你所看到的，这些通道涵盖了UDP 和 TCP 网络IO，以及文件IO。</p><p>与这些类一起的有一些有趣的接口，但为简单起见，我尽量在概述中不提到它们。本教程其它章节与它们相关的地方我会进行解释。</p><p>以下是Java NIO里关键的Buffer实现：</p><ul><li>ByteBuffer</li><li>CharBuffer</li><li>DoubleBuffer</li><li>FloatBuffer</li><li>IntBuffer</li><li>LongBuffer</li><li>ShortBuffer</li></ul><p>这些Buffer覆盖了你能通过IO发送的基本数据类型：byte, short, int, long, float, double 和 char。<br>Java NIO 还有个 MappedByteBuffer，用于表示内存映射文件， 我也不打算在概述中说明。</p><p><strong>Selector</strong></p><p>Selector允许单线程处理多个 Channel。如果你的应用打开了多个连接（通道），但每个连接的流量都很低，使用Selector就会很方便。例如，在一个聊天服务器中。<br>这是在一个单线程中使用一个Selector处理3个Channel的图示：</p><p><img src="../../public/img/javanio/overview-selectors.png" alt=""></p><p>要使用Selector，得向Selector注册Channel，然后调用它的select()方法。这个方法会一直阻塞到某个注册的通道有事件就绪。一旦这个方法返回，线程就可以处理这些事件，事件的例子有如新连接进来，数据接收等。</p>]]></content>
     
     <summary type="html">
     
       
       
         &lt;blockquote&gt;
-&lt;p&gt;Java NIO系列（一） Java NIO 概述&lt;/p&gt;
+&lt;p&gt;Java NIO 概述&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;a href=&quot;http://tutorials.jenkov.com/java-nio/overview.html&quot; target=&quot;_blank&quot; 
+&lt;p&gt;&lt;a href=&quot;http://tutorials.jenkov.com/java-nio/overview.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;
       
     
     </summary>
