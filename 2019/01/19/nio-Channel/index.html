@@ -11,18 +11,20 @@
     
 
     
-    <meta name="description" content="Channel  原文链接">
+    <meta name="description" content="Channel  原文链接 Java NIO的通道类似流，但又有些不同： - 既可以从通道中读取数据，又可以写数据到通道。但流的读写通常是单向的。 - 通道可以异步地读写。 - 通道中的数据总是要先读到一个Buffer，或者总是要从一个Buffer中写入。   正如上面所说，从通道读取数据到缓冲区，从缓冲区写入数据到通道。如下图所示：     Channel的实现   这些是Java NIO中最">
 <meta name="keywords" content="Java nio干货系列">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java NIO系列（二） Channel">
 <meta property="og:url" content="http://yoursite.com/2019/01/19/nio-Channel/index.html">
 <meta property="og:site_name" content="leo&#39;s blog">
-<meta property="og:description" content="Channel  原文链接">
+<meta property="og:description" content="Channel  原文链接 Java NIO的通道类似流，但又有些不同： - 既可以从通道中读取数据，又可以写数据到通道。但流的读写通常是单向的。 - 通道可以异步地读写。 - 通道中的数据总是要先读到一个Buffer，或者总是要从一个Buffer中写入。   正如上面所说，从通道读取数据到缓冲区，从缓冲区写入数据到通道。如下图所示：     Channel的实现   这些是Java NIO中最">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-19T15:53:54.914Z">
+<meta property="og:image" content="https://fishmc.github.io/img/javanio/overview-channels-buffers.png">
+<meta property="og:updated_time" content="2019-01-19T16:05:00.172Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java NIO系列（二） Channel">
-<meta name="twitter:description" content="Channel  原文链接">
+<meta name="twitter:description" content="Channel  原文链接 Java NIO的通道类似流，但又有些不同： - 既可以从通道中读取数据，又可以写数据到通道。但流的读写通常是单向的。 - 通道可以异步地读写。 - 通道中的数据总是要先读到一个Buffer，或者总是要从一个Buffer中写入。   正如上面所说，从通道读取数据到缓冲区，从缓冲区写入数据到通道。如下图所示：     Channel的实现   这些是Java NIO中最">
+<meta name="twitter:image" content="https://fishmc.github.io/img/javanio/overview-channels-buffers.png">
 
     
     <link rel="alternative" href="/atom.xml" title="leo&#39;s blog" type="application/atom+xml">
@@ -109,6 +111,22 @@
 <p>Channel</p>
 </blockquote>
 <p><a href="http://tutorials.jenkov.com/java-nio/overview.html" target="_blank" rel="noopener">原文链接</a></p>
+<p>Java NIO的通道类似流，但又有些不同：</p>
+<pre><code>- 既可以从通道中读取数据，又可以写数据到通道。但流的读写通常是单向的。
+- 通道可以异步地读写。
+- 通道中的数据总是要先读到一个Buffer，或者总是要从一个Buffer中写入。
+</code></pre><p>  正如上面所说，从通道读取数据到缓冲区，从缓冲区写入数据到通道。如下图所示：<br>  <img src="https://fishmc.github.io/img/javanio/overview-channels-buffers.png" alt=""></p>
+<p>  <strong>Channel的实现</strong></p>
+<p>  这些是Java NIO中最重要的通道的实现：</p>
+<pre><code>- FileChannel
+- DatagramChannel
+- SocketChannel
+- ServerSocketChannel
+</code></pre><p>  FileChannel 从文件中读写数据。<br>  DatagramChannel 能通过UDP读写网络中的数据<br>  SocketChannel 能通过TCP读写网络中的数据<br>  ServerSocketChannel 可以监听新进来的TCP连接，像Web服务器那样。对每一个新进来的连接都会创建一个SocketChannel。</p>
+<p>  <strong>基本的 Channel 示例</strong></p>
+<p>  下面是一个使用FileChannel读取数据到Buffer中的示例：</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">RandomAccessFile aFile = <span class="keyword">new</span> RandomAccessFile(<span class="string">"data/nio-data.txt"</span>, <span class="string">"rw"</span>);</span><br><span class="line">FileChannel inChannel = aFile.getChannel();</span><br><span class="line"></span><br><span class="line">ByteBuffer buf = ByteBuffer.allocate(<span class="number">48</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> bytesRead = inChannel.read(buf);</span><br><span class="line"><span class="keyword">while</span> (bytesRead != -<span class="number">1</span>) &#123;</span><br><span class="line"></span><br><span class="line">System.out.println(<span class="string">"Read "</span> + bytesRead);</span><br><span class="line">buf.flip();</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(buf.hasRemaining())&#123;</span><br><span class="line">System.out.print((<span class="keyword">char</span>) buf.get());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">buf.clear();</span><br><span class="line">bytesRead = inChannel.read(buf);</span><br><span class="line">&#125;</span><br><span class="line">aFile.close();</span><br></pre></td></tr></table></figure>
+<p>注意 buf.flip() 的调用，首先读取数据到Buffer，然后反转Buffer,接着再从Buffer中读取数据。下一节会深入讲解Buffer的更多细节。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
