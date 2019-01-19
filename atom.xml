@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-01-19T07:03:08.300Z</updated>
+  <updated>2019-01-19T08:08:46.443Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>hexo干货系列</title>
+    <link href="http://yoursite.com/2019/01/19/my-new-post/"/>
+    <id>http://yoursite.com/2019/01/19/my-new-post/</id>
+    <published>2019-01-19T07:41:40.000Z</published>
+    <updated>2019-01-19T08:08:46.443Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>hexo干货系列：（一）hexo+gitHub搭建个人独立博客</p></blockquote><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><hr><p>一直想要一个自己的独立博客，但是觉得申请域名+服务器的太麻烦了就一直没有实现。偶然机会发现Hexo这个优秀的静态博客框架，再搭配现在流行的gitHub，简直是完美写博客的黄金搭档（免费+方便）。于是就上网参考了好多教程最后磕磕碰碰的搭建了起来。但是网上的教程多多少少都有点问题，可能比较早吧。就有了这个自己总结的教程，一是自己总结一下。二是给也想搭建Hexo博客的童鞋们多一点参考。</p><h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><hr><p>我这个教程是基于Ubuntu用户的，Hexo3版本</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;hexo干货系列：（一）hexo+gitHub搭建个人独立博客&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;hr&gt;
+&lt;p
+      
+    
+    </summary>
+    
+      <category term="hexo" scheme="http://yoursite.com/categories/hexo/"/>
+    
+    
+      <category term="hexo干货系列" scheme="http://yoursite.com/tags/hexo%E5%B9%B2%E8%B4%A7%E7%B3%BB%E5%88%97/"/>
+    
+  </entry>
   
   <entry>
     <title>Hello World</title>
