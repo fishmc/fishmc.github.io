@@ -19,10 +19,15 @@
 <meta property="og:site_name" content="leo&#39;s blog">
 <meta property="og:description" content="Java NIO与IO  原文链接 当学习了Java NIO和IO的API后，一个问题马上涌入脑海： 我应该何时使用IO，何时使用NIO呢？在本文中，我会尽量清晰地解析Java NIO和IO的差异、它们的使用场景，以及它们如何影响您的代码设计。 Java NIO和IO的主要区别下表总结了Java NIO和IO之间的主要差别，我会更详细地描述表中每部分的差异。    IO NIO     面向流">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-20T08:45:41.722Z">
+<meta property="og:image" content="https://fishmc.github.io/img/javanio/nio-vs-io-1.png">
+<meta property="og:image" content="https://fishmc.github.io/img/javanio/nio-vs-io-2.png">
+<meta property="og:image" content="https://fishmc.github.io/img/javanio/nio-vs-io-3.png">
+<meta property="og:image" content="https://fishmc.github.io/img/javanio/nio-vs-io-4.png">
+<meta property="og:updated_time" content="2019-01-20T08:56:30.434Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java NIO系列（十二） Java NIO与IO">
 <meta name="twitter:description" content="Java NIO与IO  原文链接 当学习了Java NIO和IO的API后，一个问题马上涌入脑海： 我应该何时使用IO，何时使用NIO呢？在本文中，我会尽量清晰地解析Java NIO和IO的差异、它们的使用场景，以及它们如何影响您的代码设计。 Java NIO和IO的主要区别下表总结了Java NIO和IO之间的主要差别，我会更详细地描述表中每部分的差异。    IO NIO     面向流">
+<meta name="twitter:image" content="https://fishmc.github.io/img/javanio/nio-vs-io-1.png">
 
     
     <link rel="alternative" href="/atom.xml" title="leo&#39;s blog" type="application/atom+xml">
@@ -101,7 +106,7 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-NIO和IO的主要区别"><span class="toc-number">1.</span> <span class="toc-text">Java NIO和IO的主要区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#面向流与面向缓冲"><span class="toc-number">2.</span> <span class="toc-text">面向流与面向缓冲</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#阻塞与非阻塞IO"><span class="toc-number">3.</span> <span class="toc-text">阻塞与非阻塞IO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择器（Selectors）"><span class="toc-number">4.</span> <span class="toc-text">选择器（Selectors）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NIO和IO如何影响应用程序的设计"><span class="toc-number">5.</span> <span class="toc-text">NIO和IO如何影响应用程序的设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#API调用"><span class="toc-number">6.</span> <span class="toc-text">API调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据处理"><span class="toc-number">7.</span> <span class="toc-text">数据处理</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-NIO和IO的主要区别"><span class="toc-number">1.</span> <span class="toc-text">Java NIO和IO的主要区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#面向流与面向缓冲"><span class="toc-number">2.</span> <span class="toc-text">面向流与面向缓冲</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#阻塞与非阻塞IO"><span class="toc-number">3.</span> <span class="toc-text">阻塞与非阻塞IO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择器（Selectors）"><span class="toc-number">4.</span> <span class="toc-text">选择器（Selectors）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NIO和IO如何影响应用程序的设计"><span class="toc-number">5.</span> <span class="toc-text">NIO和IO如何影响应用程序的设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#API调用"><span class="toc-number">6.</span> <span class="toc-text">API调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据处理"><span class="toc-number">7.</span> <span class="toc-text">数据处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#摘要"><span class="toc-number">8.</span> <span class="toc-text">摘要</span></a></li></ol>
 		
 		</div>
 		
@@ -152,7 +157,30 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(input));</span><br><span class="line"></span><br><span class="line">String nameLine   = reader.readLine();</span><br><span class="line">String ageLine    = reader.readLine();</span><br><span class="line">String emailLine  = reader.readLine();</span><br><span class="line">String phoneLine  = reader.readLine();</span><br></pre></td></tr></table></figure>
 <p>注意处理状态是如何由程序执行的程度决定的。换句话说，一旦第一个reader.readLine()方法返回，您就确定已经读取了整行文本。这些readLine()块直到读完整行，这就是原因。您还知道此行包含名称。同样，当第二个readLine() 调用返回时，您知道此行包含年龄等。</p>
 <p>正如您所看到的，只有当有新数据要读取时，程序才会进行，并且对于每个步骤，您都知道该数据是什么。一旦执行线程已经超过读取代码中的某个数据片段，该线程就不会在数据中向后移动（通常不会）。此图中还说明了此原则：</p>
-<p><img src="" alt=""></p>
+<center><img src="https://fishmc.github.io/img/javanio/nio-vs-io-1.png" alt=""></center>
+
+<center><b>Java IO：从阻塞流中读取数据。<b></b></b></center>
+
+<p>NIO的实现看起来会有所不同。这是一个简化的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer buffer = ByteBuffer.allocate（<span class="number">48</span>）;</span><br><span class="line"><span class="keyword">int</span> bytesRead = inChannel.read（buffer）;</span><br></pre></td></tr></table></figure>
+<p>注意第二行从通道读取字节到ByteBuffer。当该方法调用返回时，您不知道所需的所有数据是否都在缓冲区内。你只知道缓冲区包含一些字节。这使得处理更加困难。</p>
+<p>想象一下，在第一次read(buffer)调用之后，是否所有读入缓冲区的内容都是半行。例如，“姓名：An”。你能处理这些数据吗？并不是的。在完成任何数据的处理之前，您需要等待至少一整行数据进入缓冲区。</p>
+<p>那么你怎么知道缓冲区是否包含足够的数据来处理它？好吧，你没有。找出的唯一方法是查看缓冲区中的数据。结果是，在您知道所有数据是否存在之前，您可能需要多次检查缓冲区中的数据。这既低效又可能在程序设计方面变得混乱。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer buffer = ByteBuffer.allocate（<span class="number">48</span>）;</span><br><span class="line"><span class="keyword">int</span> bytesRead = inChannel.read（buffer）;</span><br><span class="line"><span class="keyword">while</span>（！bufferFull（bytesRead））&#123;</span><br><span class="line">    bytesRead = inChannel.read（buffer）;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该bufferFull()方法必须跟踪读入缓冲区的数据量，并返回true或者false，取决于缓冲区是否已满。换句话说，如果缓冲区已准备好进行处理，则认为它已满。</p>
+<p>该bufferFull()方法扫描缓冲区，但必须使缓冲区处于bufferFull()调用方法之前的状态。如果不是，则可能无法在正确的位置读入读入缓冲区的下一个数据。这不是不可能的，但这是另一个需要注意的问题。</p>
+<p>如果缓冲区已满，则可以对其进行处理。如果它不满，您可以部分处理那里的任何数据，如果这在您的特定情况下是有意义的。在许多情况下，它没有。</p>
+<p>这个图中说明了is-data-in-buffer-ready循环：</p>
+<center><img src="https://fishmc.github.io/img/javanio/nio-vs-io-2.png" alt=""></center>
+
+<center><b>Java NIO：从通道读取数据，直到所有需要的数据都在缓冲区中。<b></b></b></center>
+
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>NIO允许您仅使用一个（或几个）线程来管理多个通道（网络连接或文件），但成本是解析数据可能比从阻塞流中读取数据时更复杂。</p>
+<p>如果您需要同时管理数千个打开的连接，每个只发送一些数据，例如聊天服务器，在NIO中实现服务器可能是一个优势。同样，如果您需要与其他计算机保持大量开放连接，例如在P2P网络中，使用单个线程来管理所有出站连接可能是一个优势。此图中说明了这一个线程，多个连接设计：</p>
+<center><img src="https://fishmc.github.io/img/javanio/nio-vs-io-3.png" alt=""></center><br><center><b>Java NIO：管理多个连接的单个线程。<b></b></b></center>
+
+<p>如果您拥有较少带宽的连接，一次发送大量数据，那么可能最经典的IO服务器实现可能是最合适的。此图说明了经典的IO服务器设计：</p>
+<center><img src="https://fishmc.github.io/img/javanio/nio-vs-io-4.png" alt=""></center><br><center><b>Java IO：经典的IO服务器设计 - 由一个线程处理的一个连接。<b></b></b></center>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -188,6 +216,14 @@
 	
 <nav class="article-nav clearfix">
  
+ <div class="prev">
+ <a href="/2019/01/20/nio-path/" title="Java NIO系列（十三） Java NIO路径">
+  <strong>上一篇：</strong><br>
+  <span>
+  Java NIO系列（十三） Java NIO路径</span>
+</a>
+</div>
+
 
 <div class="next">
 <a href="/2019/01/20/nio-pipe/" title="Java NIO系列（十一） Pipe">
@@ -210,7 +246,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-NIO和IO的主要区别"><span class="toc-number">1.</span> <span class="toc-text">Java NIO和IO的主要区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#面向流与面向缓冲"><span class="toc-number">2.</span> <span class="toc-text">面向流与面向缓冲</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#阻塞与非阻塞IO"><span class="toc-number">3.</span> <span class="toc-text">阻塞与非阻塞IO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择器（Selectors）"><span class="toc-number">4.</span> <span class="toc-text">选择器（Selectors）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NIO和IO如何影响应用程序的设计"><span class="toc-number">5.</span> <span class="toc-text">NIO和IO如何影响应用程序的设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#API调用"><span class="toc-number">6.</span> <span class="toc-text">API调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据处理"><span class="toc-number">7.</span> <span class="toc-text">数据处理</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-NIO和IO的主要区别"><span class="toc-number">1.</span> <span class="toc-text">Java NIO和IO的主要区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#面向流与面向缓冲"><span class="toc-number">2.</span> <span class="toc-text">面向流与面向缓冲</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#阻塞与非阻塞IO"><span class="toc-number">3.</span> <span class="toc-text">阻塞与非阻塞IO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择器（Selectors）"><span class="toc-number">4.</span> <span class="toc-text">选择器（Selectors）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NIO和IO如何影响应用程序的设计"><span class="toc-number">5.</span> <span class="toc-text">NIO和IO如何影响应用程序的设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#API调用"><span class="toc-number">6.</span> <span class="toc-text">API调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据处理"><span class="toc-number">7.</span> <span class="toc-text">数据处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#摘要"><span class="toc-number">8.</span> <span class="toc-text">摘要</span></a></li></ol>
  
   </div>
 
@@ -233,7 +269,7 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/Java-nio/" title="Java nio">Java nio<sup>12</sup></a></li>
+			<li><a href="/categories/Java-nio/" title="Java nio">Java nio<sup>13</sup></a></li>
 		  
 		
 		</ul>
@@ -246,7 +282,7 @@
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/Java-nio干货系列/" title="Java nio干货系列">Java nio干货系列<sup>12</sup></a></li>
+				<li><a href="/tags/Java-nio干货系列/" title="Java nio干货系列">Java nio干货系列<sup>13</sup></a></li>
 			
 		
 		</ul>
@@ -256,7 +292,7 @@
   
   <div class="archiveslist">
     <p class="asidetitle"><a href="/archives">归档</a></p>
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">12</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">13</span></li></ul>
   </div>
 
 
