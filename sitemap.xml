@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2019/01/20/nio-Selector/</loc>
+    
+    <lastmod>2019-01-20T04:30:58.340Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2019/01/20/nio-transfer/</loc>
+    
+    <lastmod>2019-01-20T04:29:50.458Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2019/01/20/nio-Scatter-Gather/</loc>
     
-    <lastmod>2019-01-20T04:07:30.307Z</lastmod>
+    <lastmod>2019-01-20T04:18:45.395Z</lastmod>
     
   </url>
   

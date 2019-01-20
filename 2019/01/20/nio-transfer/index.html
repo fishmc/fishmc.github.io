@@ -4,28 +4,25 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   
-    <title>Java NIO系列（一） Java NIO 概述 | leo&#39;s blog</title>
+    <title>Java NIO系列（五） 通道之间的数据传输 | leo&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="leo">
     
 
     
-    <meta name="description" content="Java NIO 概述  原文链接 Java NIO 由以下几个核心部分组成： Channels Buffers Selectors  虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件会">
+    <meta name="description" content="通道之间的数据传输  原文链接 在Java NIO中，如果两个通道中有一个是FileChannel，那你可以直接将数据从一个channel（译者注：channel中文常译作通道）传输到另外一个channel transferFrom() FileChannel的transferFrom()方法可以将数据从源通道传输到FileChannel中（译者注：这个方法在JDK文档中的解释为将字节从给定的可">
 <meta name="keywords" content="Java nio干货系列">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java NIO系列（一） Java NIO 概述">
-<meta property="og:url" content="http://yoursite.com/2019/01/19/hexo-hexo/index.html">
+<meta property="og:title" content="Java NIO系列（五） 通道之间的数据传输">
+<meta property="og:url" content="http://yoursite.com/2019/01/20/nio-transfer/index.html">
 <meta property="og:site_name" content="leo&#39;s blog">
-<meta property="og:description" content="Java NIO 概述  原文链接 Java NIO 由以下几个核心部分组成： Channels Buffers Selectors  虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件会">
+<meta property="og:description" content="通道之间的数据传输  原文链接 在Java NIO中，如果两个通道中有一个是FileChannel，那你可以直接将数据从一个channel（译者注：channel中文常译作通道）传输到另外一个channel transferFrom() FileChannel的transferFrom()方法可以将数据从源通道传输到FileChannel中（译者注：这个方法在JDK文档中的解释为将字节从给定的可">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://fishmc.github.io/img/javanio/overview-channels-buffers1.png">
-<meta property="og:image" content="https://fishmc.github.io/img/javanio/overview-selectors.png">
-<meta property="og:updated_time" content="2019-01-20T03:59:27.745Z">
+<meta property="og:updated_time" content="2019-01-20T04:29:50.458Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java NIO系列（一） Java NIO 概述">
-<meta name="twitter:description" content="Java NIO 概述  原文链接 Java NIO 由以下几个核心部分组成： Channels Buffers Selectors  虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件会">
-<meta name="twitter:image" content="https://fishmc.github.io/img/javanio/overview-channels-buffers1.png">
+<meta name="twitter:title" content="Java NIO系列（五） 通道之间的数据传输">
+<meta name="twitter:description" content="通道之间的数据传输  原文链接 在Java NIO中，如果两个通道中有一个是FileChannel，那你可以直接将数据从一个channel（译者注：channel中文常译作通道）传输到另外一个channel transferFrom() FileChannel的transferFrom()方法可以将数据从源通道传输到FileChannel中（译者注：这个方法在JDK文档中的解释为将字节从给定的可">
 
     
     <link rel="alternative" href="/atom.xml" title="leo&#39;s blog" type="application/atom+xml">
@@ -88,14 +85,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2019/01/19/hexo-hexo/" title="Java NIO系列（一） Java NIO 概述" itemprop="url">Java NIO系列（一） Java NIO 概述</a>
+      <a href="/2019/01/20/nio-transfer/" title="Java NIO系列（五） 通道之间的数据传输" itemprop="url">Java NIO系列（五） 通道之间的数据传输</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="leo" target="_blank" itemprop="author">leo</a>
 		
   </p><p class="article-time">
-    <time datetime="2019-01-19T08:30:04.000Z" itemprop="datePublished"> 发表于 2019-01-19</time>
+    <time datetime="2019-01-20T04:20:08.000Z" itemprop="datePublished"> 发表于 2019-01-20</time>
     
   </p>
 </header>
@@ -104,47 +101,24 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-NIO-由以下几个核心部分组成："><span class="toc-number">1.</span> <span class="toc-text">Java NIO 由以下几个核心部分组成：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Channel-和-Buffer"><span class="toc-number">2.</span> <span class="toc-text">Channel 和 Buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Selector"><span class="toc-number">3.</span> <span class="toc-text">Selector</span></a></li></ol>
+			
 		
 		</div>
 		
 		<blockquote>
-<p>Java NIO 概述</p>
+<p>通道之间的数据传输</p>
 </blockquote>
 <p><a href="http://tutorials.jenkov.com/java-nio/overview.html" target="_blank" rel="noopener">原文链接</a></p>
-<h2 id="Java-NIO-由以下几个核心部分组成："><a href="#Java-NIO-由以下几个核心部分组成：" class="headerlink" title="Java NIO 由以下几个核心部分组成："></a>Java NIO 由以下几个核心部分组成：</h2><ul>
-<li>Channels</li>
-<li>Buffers</li>
-<li>Selectors</li>
-</ul>
-<p>虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件会在单独的章节中讲到。</p>
-<h2 id="Channel-和-Buffer"><a href="#Channel-和-Buffer" class="headerlink" title="Channel 和 Buffer"></a>Channel 和 Buffer</h2><p>基本上，所有的 IO 在NIO 中都从一个<strong>Channel</strong> 开始。Channel 有点象流。 数据可以从Channel读到Buffer中，也可以从Buffer 写到Channel中。这里有个图示：</p>
-<center><img src="https://fishmc.github.io/img/javanio/overview-channels-buffers1.png" alt=""></center>
-
-<p>Channel和Buffer有好几种类型。下面是JAVA NIO中的一些主要Channel的实现：</p>
-<ul>
-<li>FileChannel</li>
-<li>DatagramChannel</li>
-<li>SocketChannel</li>
-<li>ServerSocketChannel</li>
-</ul>
-<p>正如你所看到的，这些通道涵盖了UDP 和 TCP 网络IO，以及文件IO。</p>
-<p>与这些类一起的有一些有趣的接口，但为简单起见，我尽量在概述中不提到它们。本教程其它章节与它们相关的地方我会进行解释。</p>
-<p>以下是Java NIO里关键的Buffer实现：</p>
-<ul>
-<li>ByteBuffer</li>
-<li>CharBuffer</li>
-<li>DoubleBuffer</li>
-<li>FloatBuffer</li>
-<li>IntBuffer</li>
-<li>LongBuffer</li>
-<li>ShortBuffer</li>
-</ul>
-<p>这些Buffer覆盖了你能通过IO发送的基本数据类型：byte, short, int, long, float, double 和 char。<br>Java NIO 还有个 MappedByteBuffer，用于表示内存映射文件， 我也不打算在概述中说明。</p>
-<h2 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h2><p>Selector允许单线程处理多个 Channel。如果你的应用打开了多个连接（通道），但每个连接的流量都很低，使用Selector就会很方便。例如，在一个聊天服务器中。<br>这是在一个单线程中使用一个Selector处理3个Channel的图示：</p>
-<center><img src="https://fishmc.github.io/img/javanio/overview-selectors.png" alt=""></center>
-
-<p>要使用Selector，得向Selector注册Channel，然后调用它的select()方法。这个方法会一直阻塞到某个注册的通道有事件就绪。一旦这个方法返回，线程就可以处理这些事件，事件的例子有如新连接进来，数据接收等。</p>
+<p>在Java NIO中，如果两个通道中有一个是FileChannel，那你可以直接将数据从一个channel（译者注：channel中文常译作通道）传输到另外一个channel</p>
+<p><strong>transferFrom()</strong></p>
+<p>FileChannel的transferFrom()方法可以将数据从源通道传输到FileChannel中（译者注：这个方法在JDK文档中的解释为将字节从给定的可读取字节通道传输到此通道的文件中）。下面是一个简单的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">RandomAccessFile fromFile = <span class="keyword">new</span> RandomAccessFile(<span class="string">"fromFile.txt"</span>, <span class="string">"rw"</span>);</span><br><span class="line">FileChannel      fromChannel = fromFile.getChannel();</span><br><span class="line"></span><br><span class="line">RandomAccessFile toFile = <span class="keyword">new</span> RandomAccessFile(<span class="string">"toFile.txt"</span>, <span class="string">"rw"</span>);</span><br><span class="line">FileChannel      toChannel = toFile.getChannel();</span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> position = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">long</span> count = fromChannel.size();</span><br><span class="line"></span><br><span class="line">toChannel.transferFrom(fromChannel , position, count);</span><br></pre></td></tr></table></figure>
+<p>方法的输入参数position表示从position处开始向目标文件写入数据，count表示最多传输的字节数。如果源通道的剩余空间小于 count 个字节，则所传输的字节数要小于请求的字节数。</p>
+<p>此外要注意，在SoketChannel的实现中，SocketChannel只会传输此刻准备好的数据（可能不足count字节）。因此，SocketChannel可能不会将请求的所有数据(count个字节)全部传输到FileChannel中。</p>
+<p><strong>transferTo()</strong></p>
+<p>transferTo()方法将数据从FileChannel传输到其他的channel中。下面是一个简单的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">RandomAccessFile fromFile = <span class="keyword">new</span> RandomAccessFile(<span class="string">"fromFile.txt"</span>, <span class="string">"rw"</span>);</span><br><span class="line">FileChannel      fromChannel = fromFile.getChannel();</span><br><span class="line"></span><br><span class="line">RandomAccessFile toFile = <span class="keyword">new</span> RandomAccessFile(<span class="string">"toFile.txt"</span>, <span class="string">"rw"</span>);</span><br><span class="line">FileChannel      toChannel = toFile.getChannel();</span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> position = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">long</span> count = fromChannel.size();</span><br><span class="line"></span><br><span class="line">fromChannel.transferTo(position, count, toChannel);</span><br></pre></td></tr></table></figure>
+<p>是不是发现这个例子和前面那个例子特别相似？除了调用方法的FileChannel对象不一样外，其他的都一样。<br>上面所说的关于SocketChannel的问题在transferTo()方法中同样存在。SocketChannel会一直传输数据直到目标buffer被填满。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -167,7 +141,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2019/01/19/hexo-hexo/" data-title="Java NIO系列（一） Java NIO 概述 | leo&#39;s blog" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2019/01/20/nio-transfer/" data-title="Java NIO系列（五） 通道之间的数据传输 | leo&#39;s blog" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -181,13 +155,21 @@
 <nav class="article-nav clearfix">
  
  <div class="prev">
- <a href="/2019/01/19/nio-Channel/" title="Java NIO系列（二） Channel">
+ <a href="/2019/01/20/nio-Selector/" title="nio-Selector">
   <strong>上一篇：</strong><br>
   <span>
-  Java NIO系列（二） Channel</span>
+  nio-Selector</span>
 </a>
 </div>
 
+
+<div class="next">
+<a href="/2019/01/20/nio-Scatter-Gather/" title="Java NIO系列（四） Scatter/Gather">
+ <strong>下一篇：</strong><br> 
+ <span>Java NIO系列（四） Scatter/Gather
+</span>
+</a>
+</div>
 
 </nav>
 
@@ -201,7 +183,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-NIO-由以下几个核心部分组成："><span class="toc-number">1.</span> <span class="toc-text">Java NIO 由以下几个核心部分组成：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Channel-和-Buffer"><span class="toc-number">2.</span> <span class="toc-text">Channel 和 Buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Selector"><span class="toc-number">3.</span> <span class="toc-text">Selector</span></a></li></ol>
+ 
  
   </div>
 
