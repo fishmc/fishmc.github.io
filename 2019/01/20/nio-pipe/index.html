@@ -4,25 +4,27 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   
-    <title>Java NIO系列（九） ServerSocketChannel | leo&#39;s blog</title>
+    <title>Java NIO系列（十） Pipe | leo&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="leo">
     
 
     
-    <meta name="description" content="ServerSocketChannel  原文链接 Java NIO中的 ServerSocketChannel 是一个可以监听新进来的TCP连接的通道, 就像标准IO中的ServerSocket一样。ServerSocketChannel类在 java.nio.channels包中。 这里有个例子： 123456789ServerSocketChannel serverSocketChanne">
+    <meta name="description" content="Pipe  原文链接 Java NIO 管道是2个线程之间的单向数据连接。Pipe有一个source通道和一个sink通道。数据会被写到sink通道，从source通道读取。 这里是Pipe原理的图示：   创建管道 通过Pipe.open()方法打开管道。例如： 1Pipe pipe = Pipe.open(); 向管道写数据 要向管道写数据，需要访问sink通道。像这样： 1Pipe.Sin">
 <meta name="keywords" content="Java nio干货系列">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java NIO系列（九） ServerSocketChannel">
-<meta property="og:url" content="http://yoursite.com/2019/01/20/nio-serversocketchannel/index.html">
+<meta property="og:title" content="Java NIO系列（十） Pipe">
+<meta property="og:url" content="http://yoursite.com/2019/01/20/nio-pipe/index.html">
 <meta property="og:site_name" content="leo&#39;s blog">
-<meta property="og:description" content="ServerSocketChannel  原文链接 Java NIO中的 ServerSocketChannel 是一个可以监听新进来的TCP连接的通道, 就像标准IO中的ServerSocket一样。ServerSocketChannel类在 java.nio.channels包中。 这里有个例子： 123456789ServerSocketChannel serverSocketChanne">
+<meta property="og:description" content="Pipe  原文链接 Java NIO 管道是2个线程之间的单向数据连接。Pipe有一个source通道和一个sink通道。数据会被写到sink通道，从source通道读取。 这里是Pipe原理的图示：   创建管道 通过Pipe.open()方法打开管道。例如： 1Pipe pipe = Pipe.open(); 向管道写数据 要向管道写数据，需要访问sink通道。像这样： 1Pipe.Sin">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-20T07:27:48.853Z">
+<meta property="og:image" content="https://fishmc.github.io/img/javanio/pipe.bmp">
+<meta property="og:updated_time" content="2019-01-20T07:43:55.592Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java NIO系列（九） ServerSocketChannel">
-<meta name="twitter:description" content="ServerSocketChannel  原文链接 Java NIO中的 ServerSocketChannel 是一个可以监听新进来的TCP连接的通道, 就像标准IO中的ServerSocket一样。ServerSocketChannel类在 java.nio.channels包中。 这里有个例子： 123456789ServerSocketChannel serverSocketChanne">
+<meta name="twitter:title" content="Java NIO系列（十） Pipe">
+<meta name="twitter:description" content="Pipe  原文链接 Java NIO 管道是2个线程之间的单向数据连接。Pipe有一个source通道和一个sink通道。数据会被写到sink通道，从source通道读取。 这里是Pipe原理的图示：   创建管道 通过Pipe.open()方法打开管道。例如： 1Pipe pipe = Pipe.open(); 向管道写数据 要向管道写数据，需要访问sink通道。像这样： 1Pipe.Sin">
+<meta name="twitter:image" content="https://fishmc.github.io/img/javanio/pipe.bmp">
 
     
     <link rel="alternative" href="/atom.xml" title="leo&#39;s blog" type="application/atom+xml">
@@ -85,14 +87,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2019/01/20/nio-serversocketchannel/" title="Java NIO系列（九） ServerSocketChannel" itemprop="url">Java NIO系列（九） ServerSocketChannel</a>
+      <a href="/2019/01/20/nio-pipe/" title="Java NIO系列（十） Pipe" itemprop="url">Java NIO系列（十） Pipe</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="leo" target="_blank" itemprop="author">leo</a>
 		
   </p><p class="article-time">
-    <time datetime="2019-01-20T07:19:26.000Z" itemprop="datePublished"> 发表于 2019-01-20</time>
+    <time datetime="2019-01-20T07:37:26.000Z" itemprop="datePublished"> 发表于 2019-01-20</time>
     
   </p>
 </header>
@@ -106,26 +108,27 @@
 		</div>
 		
 		<blockquote>
-<p>ServerSocketChannel</p>
+<p>Pipe</p>
 </blockquote>
 <p><a href="http://tutorials.jenkov.com/java-nio/overview.html" target="_blank" rel="noopener">原文链接</a></p>
-<p>Java NIO中的 ServerSocketChannel 是一个可以监听新进来的TCP连接的通道, 就像标准IO中的ServerSocket一样。ServerSocketChannel类在 java.nio.channels包中。</p>
-<p>这里有个例子：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();</span><br><span class="line"></span><br><span class="line">serverSocketChannel.socket().bind(<span class="keyword">new</span> InetSocketAddress(<span class="number">9999</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">    SocketChannel socketChannel = serverSocketChannel.accept();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//do something with socketChannel...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>打开 ServerSocketChannel</strong></p>
-<p>通过调用 ServerSocketChannel.open() 方法来打开ServerSocketChannel.如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();</span><br></pre></td></tr></table></figure>
-<p><strong>关闭 ServerSocketChannel</strong></p>
-<p>通过调用ServerSocketChannel.close() 方法来关闭ServerSocketChannel. 如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">serverSocketChannel.close();</span><br></pre></td></tr></table></figure>
-<p><strong>监听新进来的连接</strong></p>
-<p>通过 ServerSocketChannel.accept() 方法监听新进来的连接。当 accept()方法返回的时候,它返回一个包含新进来的连接的 SocketChannel。因此, accept()方法会一直阻塞到有新连接到达。</p>
-<p>通常不会仅仅只监听一个连接,在while循环中调用 accept()方法. 如下面的例子：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">    SocketChannel socketChannel = serverSocketChannel.accept();</span><br><span class="line">    <span class="comment">//do something with socketChannel...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当然,也可以在while循环中使用除了true以外的其它退出准则。</p>
-<p><strong>非阻塞模式</strong></p>
-<p>ServerSocketChannel可以设置成非阻塞模式。在非阻塞模式下，accept() 方法会立刻返回，如果还没有新进来的连接,返回的将是null。 因此，需要检查返回的SocketChannel是否是null.如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();</span><br><span class="line">serverSocketChannel.socket().bind(<span class="keyword">new</span> InetSocketAddress(<span class="number">9999</span>));</span><br><span class="line">serverSocketChannel.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">    SocketChannel socketChannel =  serverSocketChannel.accept();</span><br><span class="line">    <span class="keyword">if</span>(socketChannel != <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="comment">//do something with socketChannel...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Java NIO 管道是2个线程之间的单向数据连接。Pipe有一个source通道和一个sink通道。数据会被写到sink通道，从source通道读取。</p>
+<p>这里是Pipe原理的图示：</p>
+<center><img src="https://fishmc.github.io/img/javanio/pipe.bmp" alt=""></center>
+
+<p><strong>创建管道</strong></p>
+<p>通过Pipe.open()方法打开管道。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Pipe pipe = Pipe.open();</span><br></pre></td></tr></table></figure>
+<p><strong>向管道写数据</strong></p>
+<p>要向管道写数据，需要访问sink通道。像这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Pipe.SinkChannel sinkChannel = pipe.sink();</span><br></pre></td></tr></table></figure>
+<p>通过调用SinkChannel的write()方法，将数据写入SinkChannel,像这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">String newData = <span class="string">"New String to write to file..."</span> + System.currentTimeMillis();</span><br><span class="line">ByteBuffer buf = ByteBuffer.allocate(<span class="number">48</span>);</span><br><span class="line">buf.clear();</span><br><span class="line">buf.put(newData.getBytes());</span><br><span class="line"></span><br><span class="line">buf.flip();</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(buf.hasRemaining()) &#123;</span><br><span class="line">    sinkChannel.write(buf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>从管道读取数据</strong></p>
+<p>从读取管道的数据，需要访问source通道，像这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Pipe.SourceChannel sourceChannel = pipe.source();</span><br></pre></td></tr></table></figure>
+<p>调用source通道的read()方法来读取数据，像这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer buf = ByteBuffer.allocate(<span class="number">48</span>);</span><br><span class="line"><span class="keyword">int</span> bytesRead = sourceChannel.read(buf);</span><br></pre></td></tr></table></figure>
+<p>read()方法返回的int值会告诉我们多少字节被读进了缓冲区。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -148,7 +151,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2019/01/20/nio-serversocketchannel/" data-title="Java NIO系列（九） ServerSocketChannel | leo&#39;s blog" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2019/01/20/nio-pipe/" data-title="Java NIO系列（十） Pipe | leo&#39;s blog" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -161,19 +164,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev">
- <a href="/2019/01/20/nio-datagramchannel/" title="Java NIO系列（九） DatagramChannel">
-  <strong>上一篇：</strong><br>
-  <span>
-  Java NIO系列（九） DatagramChannel</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2019/01/20/nio-sockerchannel/" title="Java NIO系列（八） SocketChannel">
+<a href="/2019/01/20/nio-datagramchannel/" title="Java NIO系列（九） DatagramChannel">
  <strong>下一篇：</strong><br> 
- <span>Java NIO系列（八） SocketChannel
+ <span>Java NIO系列（九） DatagramChannel
 </span>
 </a>
 </div>
