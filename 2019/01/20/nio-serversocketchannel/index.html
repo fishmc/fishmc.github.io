@@ -4,28 +4,25 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   
-    <title>Java NIO系列（一） Java NIO 概述 | leo&#39;s blog</title>
+    <title>Java NIO系列（九） ServerSocketChannel | leo&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="leo">
     
 
     
-    <meta name="description" content="Java NIO 概述  原文链接 Java NIO 由以下几个核心部分组成： Channels Buffers Selectors  虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件会">
+    <meta name="description" content="ServerSocketChannel  原文链接 Java NIO中的 ServerSocketChannel 是一个可以监听新进来的TCP连接的通道, 就像标准IO中的ServerSocket一样。ServerSocketChannel类在 java.nio.channels包中。 这里有个例子： 123456789ServerSocketChannel serverSocketChanne">
 <meta name="keywords" content="Java nio干货系列">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java NIO系列（一） Java NIO 概述">
-<meta property="og:url" content="http://yoursite.com/2019/01/19/hexo-hexo/index.html">
+<meta property="og:title" content="Java NIO系列（九） ServerSocketChannel">
+<meta property="og:url" content="http://yoursite.com/2019/01/20/nio-serversocketchannel/index.html">
 <meta property="og:site_name" content="leo&#39;s blog">
-<meta property="og:description" content="Java NIO 概述  原文链接 Java NIO 由以下几个核心部分组成： Channels Buffers Selectors  虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件会">
+<meta property="og:description" content="ServerSocketChannel  原文链接 Java NIO中的 ServerSocketChannel 是一个可以监听新进来的TCP连接的通道, 就像标准IO中的ServerSocket一样。ServerSocketChannel类在 java.nio.channels包中。 这里有个例子： 123456789ServerSocketChannel serverSocketChanne">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://fishmc.github.io/img/javanio/overview-channels-buffers1.png">
-<meta property="og:image" content="https://fishmc.github.io/img/javanio/overview-selectors.png">
-<meta property="og:updated_time" content="2019-01-20T03:59:27.745Z">
+<meta property="og:updated_time" content="2019-01-20T07:27:48.853Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java NIO系列（一） Java NIO 概述">
-<meta name="twitter:description" content="Java NIO 概述  原文链接 Java NIO 由以下几个核心部分组成： Channels Buffers Selectors  虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件会">
-<meta name="twitter:image" content="https://fishmc.github.io/img/javanio/overview-channels-buffers1.png">
+<meta name="twitter:title" content="Java NIO系列（九） ServerSocketChannel">
+<meta name="twitter:description" content="ServerSocketChannel  原文链接 Java NIO中的 ServerSocketChannel 是一个可以监听新进来的TCP连接的通道, 就像标准IO中的ServerSocket一样。ServerSocketChannel类在 java.nio.channels包中。 这里有个例子： 123456789ServerSocketChannel serverSocketChanne">
 
     
     <link rel="alternative" href="/atom.xml" title="leo&#39;s blog" type="application/atom+xml">
@@ -88,14 +85,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2019/01/19/hexo-hexo/" title="Java NIO系列（一） Java NIO 概述" itemprop="url">Java NIO系列（一） Java NIO 概述</a>
+      <a href="/2019/01/20/nio-serversocketchannel/" title="Java NIO系列（九） ServerSocketChannel" itemprop="url">Java NIO系列（九） ServerSocketChannel</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="leo" target="_blank" itemprop="author">leo</a>
 		
   </p><p class="article-time">
-    <time datetime="2019-01-19T08:30:04.000Z" itemprop="datePublished"> 发表于 2019-01-19</time>
+    <time datetime="2019-01-20T07:19:26.000Z" itemprop="datePublished"> 发表于 2019-01-20</time>
     
   </p>
 </header>
@@ -104,47 +101,31 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-NIO-由以下几个核心部分组成："><span class="toc-number">1.</span> <span class="toc-text">Java NIO 由以下几个核心部分组成：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Channel-和-Buffer"><span class="toc-number">2.</span> <span class="toc-text">Channel 和 Buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Selector"><span class="toc-number">3.</span> <span class="toc-text">Selector</span></a></li></ol>
+			
 		
 		</div>
 		
 		<blockquote>
-<p>Java NIO 概述</p>
+<p>ServerSocketChannel</p>
 </blockquote>
 <p><a href="http://tutorials.jenkov.com/java-nio/overview.html" target="_blank" rel="noopener">原文链接</a></p>
-<h2 id="Java-NIO-由以下几个核心部分组成："><a href="#Java-NIO-由以下几个核心部分组成：" class="headerlink" title="Java NIO 由以下几个核心部分组成："></a>Java NIO 由以下几个核心部分组成：</h2><ul>
-<li>Channels</li>
-<li>Buffers</li>
-<li>Selectors</li>
-</ul>
-<p>虽然Java NIO 中除此之外还有很多类和组件，但在我看来，Channel，Buffer 和 Selector 构成了核心的API。其它组件，如Pipe和FileLock，只不过是与三个核心组件共同使用的工具类。因此，在概述中我将集中在这三个组件上。其它组件会在单独的章节中讲到。</p>
-<h2 id="Channel-和-Buffer"><a href="#Channel-和-Buffer" class="headerlink" title="Channel 和 Buffer"></a>Channel 和 Buffer</h2><p>基本上，所有的 IO 在NIO 中都从一个<strong>Channel</strong> 开始。Channel 有点象流。 数据可以从Channel读到Buffer中，也可以从Buffer 写到Channel中。这里有个图示：</p>
-<center><img src="https://fishmc.github.io/img/javanio/overview-channels-buffers1.png" alt=""></center>
-
-<p>Channel和Buffer有好几种类型。下面是JAVA NIO中的一些主要Channel的实现：</p>
-<ul>
-<li>FileChannel</li>
-<li>DatagramChannel</li>
-<li>SocketChannel</li>
-<li>ServerSocketChannel</li>
-</ul>
-<p>正如你所看到的，这些通道涵盖了UDP 和 TCP 网络IO，以及文件IO。</p>
-<p>与这些类一起的有一些有趣的接口，但为简单起见，我尽量在概述中不提到它们。本教程其它章节与它们相关的地方我会进行解释。</p>
-<p>以下是Java NIO里关键的Buffer实现：</p>
-<ul>
-<li>ByteBuffer</li>
-<li>CharBuffer</li>
-<li>DoubleBuffer</li>
-<li>FloatBuffer</li>
-<li>IntBuffer</li>
-<li>LongBuffer</li>
-<li>ShortBuffer</li>
-</ul>
-<p>这些Buffer覆盖了你能通过IO发送的基本数据类型：byte, short, int, long, float, double 和 char。<br>Java NIO 还有个 MappedByteBuffer，用于表示内存映射文件， 我也不打算在概述中说明。</p>
-<h2 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h2><p>Selector允许单线程处理多个 Channel。如果你的应用打开了多个连接（通道），但每个连接的流量都很低，使用Selector就会很方便。例如，在一个聊天服务器中。<br>这是在一个单线程中使用一个Selector处理3个Channel的图示：</p>
-<center><img src="https://fishmc.github.io/img/javanio/overview-selectors.png" alt=""></center>
-
-<p>要使用Selector，得向Selector注册Channel，然后调用它的select()方法。这个方法会一直阻塞到某个注册的通道有事件就绪。一旦这个方法返回，线程就可以处理这些事件，事件的例子有如新连接进来，数据接收等。</p>
+<p>Java NIO中的 ServerSocketChannel 是一个可以监听新进来的TCP连接的通道, 就像标准IO中的ServerSocket一样。ServerSocketChannel类在 java.nio.channels包中。</p>
+<p>这里有个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();</span><br><span class="line"></span><br><span class="line">serverSocketChannel.socket().bind(<span class="keyword">new</span> InetSocketAddress(<span class="number">9999</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">    SocketChannel socketChannel = serverSocketChannel.accept();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//do something with socketChannel...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>打开 ServerSocketChannel</strong></p>
+<p>通过调用 ServerSocketChannel.open() 方法来打开ServerSocketChannel.如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();</span><br></pre></td></tr></table></figure>
+<p><strong>关闭 ServerSocketChannel</strong></p>
+<p>通过调用ServerSocketChannel.close() 方法来关闭ServerSocketChannel. 如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">serverSocketChannel.close();</span><br></pre></td></tr></table></figure>
+<p><strong>监听新进来的连接</strong></p>
+<p>通过 ServerSocketChannel.accept() 方法监听新进来的连接。当 accept()方法返回的时候,它返回一个包含新进来的连接的 SocketChannel。因此, accept()方法会一直阻塞到有新连接到达。</p>
+<p>通常不会仅仅只监听一个连接,在while循环中调用 accept()方法. 如下面的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">    SocketChannel socketChannel = serverSocketChannel.accept();</span><br><span class="line">    <span class="comment">//do something with socketChannel...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然,也可以在while循环中使用除了true以外的其它退出准则。</p>
+<p><strong>非阻塞模式</strong></p>
+<p>ServerSocketChannel可以设置成非阻塞模式。在非阻塞模式下，accept() 方法会立刻返回，如果还没有新进来的连接,返回的将是null。 因此，需要检查返回的SocketChannel是否是null.如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();</span><br><span class="line">serverSocketChannel.socket().bind(<span class="keyword">new</span> InetSocketAddress(<span class="number">9999</span>));</span><br><span class="line">serverSocketChannel.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">    SocketChannel socketChannel =  serverSocketChannel.accept();</span><br><span class="line">    <span class="keyword">if</span>(socketChannel != <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="comment">//do something with socketChannel...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -167,7 +148,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2019/01/19/hexo-hexo/" data-title="Java NIO系列（一） Java NIO 概述 | leo&#39;s blog" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2019/01/20/nio-serversocketchannel/" data-title="Java NIO系列（九） ServerSocketChannel | leo&#39;s blog" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -181,13 +162,21 @@
 <nav class="article-nav clearfix">
  
  <div class="prev">
- <a href="/2019/01/19/nio-Channel/" title="Java NIO系列（二） Channel">
+ <a href="/2019/01/20/nio-datagramchannel/" title="Java NIO系列（九） DatagramChannel">
   <strong>上一篇：</strong><br>
   <span>
-  Java NIO系列（二） Channel</span>
+  Java NIO系列（九） DatagramChannel</span>
 </a>
 </div>
 
+
+<div class="next">
+<a href="/2019/01/20/nio-sockerchannel/" title="Java NIO系列（八） SocketChannel">
+ <strong>下一篇：</strong><br> 
+ <span>Java NIO系列（八） SocketChannel
+</span>
+</a>
+</div>
 
 </nav>
 
@@ -202,7 +191,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-NIO-由以下几个核心部分组成："><span class="toc-number">1.</span> <span class="toc-text">Java NIO 由以下几个核心部分组成：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Channel-和-Buffer"><span class="toc-number">2.</span> <span class="toc-text">Channel 和 Buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Selector"><span class="toc-number">3.</span> <span class="toc-text">Selector</span></a></li></ol>
+ 
  
   </div>
 
