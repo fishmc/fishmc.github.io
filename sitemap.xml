@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/2019/01/19/nio-Channel/</loc>
+    <loc>http://yoursite.com/2019/01/20/nio-Scatter-Gather/</loc>
     
-    <lastmod>2019-01-19T17:18:56.021Z</lastmod>
+    <lastmod>2019-01-20T04:07:30.307Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://yoursite.com/2019/01/19/hexo-hexo/</loc>
     
-    <lastmod>2019-01-19T17:18:11.321Z</lastmod>
+    <lastmod>2019-01-20T03:59:27.745Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2019/01/19/nio-Channel/</loc>
+    
+    <lastmod>2019-01-19T17:18:56.021Z</lastmod>
     
   </url>
   
