@@ -1,0 +1,540 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  
+    <title>Java NIO系列（十四） Java NIO Files | leo&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="leo">
+    
+
+    
+    <meta name="description" content="Java NIO Files  原文链接 Java NIO Files类（java.nio.file.Files）提供了几种操作文件系统中文件的方法。这篇Java NIO Files教程将介绍这些方法中最常用的方法。本Files类包含了许多方法，所以检查的JavaDoc也一样，如果你需要的是不是这里所描述的方法。该Files班只可能有一个方法，它仍然。 在java.nio.file.Files类">
+<meta name="keywords" content="Java nio干货系列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java NIO系列（十四） Java NIO Files">
+<meta property="og:url" content="http://yoursite.com/2019/01/20/nio-files/index.html">
+<meta property="og:site_name" content="leo&#39;s blog">
+<meta property="og:description" content="Java NIO Files  原文链接 Java NIO Files类（java.nio.file.Files）提供了几种操作文件系统中文件的方法。这篇Java NIO Files教程将介绍这些方法中最常用的方法。本Files类包含了许多方法，所以检查的JavaDoc也一样，如果你需要的是不是这里所描述的方法。该Files班只可能有一个方法，它仍然。 在java.nio.file.Files类">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-20T09:50:17.078Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java NIO系列（十四） Java NIO Files">
+<meta name="twitter:description" content="Java NIO Files  原文链接 Java NIO Files类（java.nio.file.Files）提供了几种操作文件系统中文件的方法。这篇Java NIO Files教程将介绍这些方法中最常用的方法。本Files类包含了许多方法，所以检查的JavaDoc也一样，如果你需要的是不是这里所描述的方法。该Files班只可能有一个方法，它仍然。 在java.nio.file.Files类">
+
+    
+    <link rel="alternative" href="/atom.xml" title="leo&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.jpg" alt="leo&#39;s blog" title="leo&#39;s blog"></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="leo&#39;s blog">leo&#39;s blog</a></h1>
+				<h2 class="blog-motto">手松开你才能乘托更多的东西</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索">
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</ul></nav>
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope="" itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2019/01/20/nio-files/" title="Java NIO系列（十四） Java NIO Files" itemprop="url">Java NIO系列（十四） Java NIO Files</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="leo" target="_blank" itemprop="author">leo</a>
+		
+  </p><p class="article-time">
+    <time datetime="2019-01-20T09:29:27.000Z" itemprop="datePublished"> 发表于 2019-01-20</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-exists"><span class="toc-number">1.</span> <span class="toc-text">Files.exists()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-createDirectory"><span class="toc-number">2.</span> <span class="toc-text">Files.createDirectory()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-copy"><span class="toc-number">3.</span> <span class="toc-text">Files.copy()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-move"><span class="toc-number">4.</span> <span class="toc-text">Files.move()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-delete"><span class="toc-number">5.</span> <span class="toc-text">Files.delete()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-walkFileTree"><span class="toc-number">6.</span> <span class="toc-text">Files.walkFileTree()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Additional-Methods-in-the-Files-Class"><span class="toc-number">7.</span> <span class="toc-text">Additional Methods in the Files Class</span></a></li></ol>
+		
+		</div>
+		
+		<blockquote>
+<p>Java NIO Files</p>
+</blockquote>
+<p><a href="http://tutorials.jenkov.com/java-nio/overview.html" target="_blank" rel="noopener">原文链接</a></p>
+<p>Java NIO Files类（java.nio.file.Files）提供了几种操作文件系统中文件的方法。这篇Java NIO Files教程将介绍这些方法中最常用的方法。本Files类包含了许多方法，所以检查的JavaDoc也一样，如果你需要的是不是这里所描述的方法。该Files班只可能有一个方法，它仍然。</p>
+<p>在java.nio.file.Files类的工作与java.nio.file.Path 实例，所以你需要了解的Path类，然后才能与工作Files 类。</p>
+<h2 id="Files-exists"><a href="#Files-exists" class="headerlink" title="Files.exists()"></a>Files.exists()</h2><p>该Files.exists()方法检查Path文件系统中是否存在给定的。</p>
+<p>可以创建Path文件系统中不存在的实例。例如，如果您计划创建新目录，则首先创建相应的Path实例，然后创建目录。</p>
+<p>由于Path实例可能会或可能不会指向文件系统中存在的路径，因此您可以使用该Files.exists()方法确定它们是否存在（如果您需要检查）。</p>
+<p>这是一个Java Files.exists()示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Path path = Paths.get(<span class="string">"data/logging.properties"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">boolean</span> pathExists =</span><br><span class="line">        Files.exists(path,</span><br><span class="line">            <span class="keyword">new</span> LinkOption[]&#123; LinkOption.NOFOLLOW_LINKS&#125;);</span><br></pre></td></tr></table></figure>
+<p>此示例首先创建一个Path指向我们要检查的路径的实例是否存在。其次，该示例Files.exists()使用Path实例作为第一个参数调用该方法。</p>
+<p>注意方法的第二个参数Files.exists()。此参数是一个选项数组，它们影响Files.exists()确定路径是否存在的方式。在上面的这个例子中，数组包含LinkOption.NOFOLLOW_LINKS这意味着该Files.exists() 方法不应该遵循文件系统中的符号链接来确定路径是否存在。</p>
+<h2 id="Files-createDirectory"><a href="#Files-createDirectory" class="headerlink" title="Files.createDirectory()"></a>Files.createDirectory()</h2><p>该Files.createDirectory()方法从Path实例创建新目录。这是一个Java Files.createDirectory()示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Path path = Paths.get(<span class="string">"data/subdir"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Path newDir = Files.createDirectory(path);</span><br><span class="line">&#125; <span class="keyword">catch</span>(FileAlreadyExistsException e)&#123;</span><br><span class="line">    <span class="comment">// the directory already exists.</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    <span class="comment">//something else went wrong</span></span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一行创建Path表示要创建的目录的实例。在try-catch块内部，Files.createDirectory()使用path作为参数调用方法。如果创建目录成功，Path则返回指向新创建的路径的实例。</p>
+<p>如果该目录已存在，java.nio.file.FileAlreadyExistsException则将抛出a。如果出现其他问题，IOException可能会被抛出。例如，如果所需的新目录的父目录不存在，则IOException可能会抛出。父目录是您要在其中创建新目录的目录。因此，它表示新目录的父目录。</p>
+<h2 id="Files-copy"><a href="#Files-copy" class="headerlink" title="Files.copy()"></a>Files.copy()</h2><p>该Files.copy()方法将文件从一个路径复制到另一个路径。这是一个Java NIO Files.copy() 示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Path sourcePath      = Paths.get(<span class="string">"data/logging.properties"</span>);</span><br><span class="line">Path destinationPath = Paths.get(<span class="string">"data/logging-copy.properties"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Files.copy(sourcePath, destinationPath);</span><br><span class="line">&#125; <span class="keyword">catch</span>(FileAlreadyExistsException e) &#123;</span><br><span class="line">    <span class="comment">//destination file already exists</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    <span class="comment">//something else went wrong</span></span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先，该示例创建源和目标Path实例。然后示例调用 Files.copy()，将两个Path实例作为参数传递。这将导致源路径引用的文件被复制到目标路径引用的文件。</p>
+<p>如果目标文件已存在，java.nio.file.FileAlreadyExistsException则抛出a。如果出现其他问题，IOException将会抛出。例如，如果要复制文件的目录不存在，IOException则抛出一个。</p>
+<p><strong>覆盖现有文件</strong></p>
+<p>可以强制Files.copy()覆盖现有文件。这是一个示例，说明如何使用Files.copy()以下方法覆盖现有文件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Path sourcePath      = Paths.get(<span class="string">"data/logging.properties"</span>);</span><br><span class="line">Path destinationPath = Paths.get(<span class="string">"data/logging-copy.properties"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Files.copy(sourcePath, destinationPath,</span><br><span class="line">            StandardCopyOption.REPLACE_EXISTING);</span><br><span class="line">&#125; <span class="keyword">catch</span>(FileAlreadyExistsException e) &#123;</span><br><span class="line">    <span class="comment">//destination file already exists</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    <span class="comment">//something else went wrong</span></span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意方法的第三个参数Files.copy()。copy() 如果目标文件已存在，则此参数指示方法覆盖现有文件。</p>
+<h2 id="Files-move"><a href="#Files-move" class="headerlink" title="Files.move()"></a>Files.move()</h2><p>Java NIO Files类还包含用于将文件从一个路径移动到另一个路径的功能。移动文件与重命名文件相同，除了移动文件可以将文件移动到不同的目录并在同一操作中更改其名称。是的，java.io.File该类也可以使用其renameTo() 方法执行此操作，但现在您也可以在java.nio.file.Files类中使用文件移动功能。</p>
+<p>这是一个Java Files.move()示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Path sourcePath      = Paths.get(<span class="string">"data/logging-copy.properties"</span>);</span><br><span class="line">Path destinationPath = Paths.get(<span class="string">"data/subdir/logging-moved.properties"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Files.move(sourcePath, destinationPath,</span><br><span class="line">            StandardCopyOption.REPLACE_EXISTING);</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    <span class="comment">//moving file failed.</span></span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先创建源路径和目标路径。源路径指向要移动的文件，目标路径指向应将文件移动到的位置。然后Files.move()调用该方法。这会导致文件被移动。</p>
+<p>注意传递给的第三个参数Files.move()。此参数指示Files.move()方法覆盖目标路径上的任何现有文件。该参数实际上是可选的。</p>
+<p>如果移动文件失败， 该Files.move()方法可能会抛出IOException。例如，如果文件已经存在于目标路径中，并且您遗漏了该StandardCopyOption.REPLACE_EXISTING 选项，或者要移动的文件不存在等。</p>
+<h2 id="Files-delete"><a href="#Files-delete" class="headerlink" title="Files.delete()"></a>Files.delete()</h2><p>该Files.delete()方法可以删除文件或目录。这是一个Java Files.delete()示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Path path = Paths.get(<span class="string">"data/subdir/logging-moved.properties"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Files.delete(path);</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    <span class="comment">//deleting file failed</span></span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先，Path创建指向要删除的文件。其次，该Files.delete() 方法被调用。如果由于Files.delete()某种原因未能删除文件（例如文件或目录不存在），IOException则抛出a。</p>
+<h2 id="Files-walkFileTree"><a href="#Files-walkFileTree" class="headerlink" title="Files.walkFileTree()"></a>Files.walkFileTree()</h2><p>该Files.walkFileTree()方法包含用于递归遍历目录树的功能。该walkFileTree()方法采用Path实例和FileVisitoras参数。该Path实例指向要遍历的目录。该FileVisitor traversion时被调用。</p>
+<p>在我解释遍历如何工作之前，首先是FileVisitor接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">FileVisitor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">preVisitDirectory</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">      Path dir, BasicFileAttributes attrs)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">visitFile</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">      Path file, BasicFileAttributes attrs)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">visitFileFailed</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">      Path file, IOException exc)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">postVisitDirectory</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">      Path dir, IOException exc)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>您必须自己实现该FileVisitor接口，并将实现的实例传递给该walkFileTree()方法。FileVisitor在目录遍历期间，将在不同时间调用实现的每个方法。如果您不需要挂钩所有这些方法，则可以扩展SimpleFileVisitor该类，该类包含FileVisitor接口中所有方法的默认实现。</p>
+<p>这是一个walkFileTree()例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Files.walkFileTree(path, <span class="keyword">new</span> FileVisitor&lt;Path&gt;() &#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">preVisitDirectory</span><span class="params">(Path dir, BasicFileAttributes attrs)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"pre visit dir:"</span> + dir);</span><br><span class="line">    <span class="keyword">return</span> FileVisitResult.CONTINUE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">visitFile</span><span class="params">(Path file, BasicFileAttributes attrs)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"visit file: "</span> + file);</span><br><span class="line">    <span class="keyword">return</span> FileVisitResult.CONTINUE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">visitFileFailed</span><span class="params">(Path file, IOException exc)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"visit file failed: "</span> + file);</span><br><span class="line">    <span class="keyword">return</span> FileVisitResult.CONTINUE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">postVisitDirectory</span><span class="params">(Path dir, IOException exc)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"post visit directory: "</span> + dir);</span><br><span class="line">    <span class="keyword">return</span> FileVisitResult.CONTINUE;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>FileVisitor在遍历期间，在不同的时间调用实现 中的每个方法：</p>
+<p>preVisitDirectory()在访问任何目录之前调用 该方法。postVisitDirectory()访问目录后立即调用该 方法。</p>
+<p>该visitFile()mehtod被要求在文件访问步行每个文件。它不是为目录而调用的 - 只是文件。visitFileFailed()在访问文件失败的情况下调用该方法。例如，如果您没有正确的权限，或者出现其他问题。</p>
+<p>四种方法中的每一种都返回一个FileVisitResult枚举实例。该FileVisitResult 枚举包含以下四个选项：</p>
+<ul>
+<li>CONTINUE</li>
+<li>TERMINATE</li>
+<li>SKIP_SIBLINGS</li>
+<li>SKIP_SUBTREE</li>
+</ul>
+<p>通过返回其中一个值，被调用的方法可以决定文件遍历应该如何继续。</p>
+<p>CONTINUE 表示文件遍历应该正常继续。</p>
+<p>TERMINATE 意味着文件行走现在应该终止。</p>
+<p>SKIP_SIBLINGS 表示文件遍历应该继续但不访问此文件或目录的任何兄弟。</p>
+<p>SKIP_SUBTREE表示文件遍历应该继续但不访问此目录中的条目。该值仅在返回时具有函数preVisitDirectory()。如果从任何其他方法返回，它将被解释为a CONTINUE。</p>
+<p><strong>搜索文件</strong></p>
+<p>这是一个walkFileTree()扩展SimpleFileVisitor为查找名为的文件 README.txt：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Path rootPath = Paths.get(<span class="string">"data"</span>);</span><br><span class="line">String fileToFind = File.separator + <span class="string">"README.txt"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  Files.walkFileTree(rootPath, <span class="keyword">new</span> SimpleFileVisitor&lt;Path&gt;() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">visitFile</span><span class="params">(Path file, BasicFileAttributes attrs)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      String fileString = file.toAbsolutePath().toString();</span><br><span class="line">      <span class="comment">//System.out.println("pathString = " + fileString);</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span>(fileString.endsWith(fileToFind))&#123;</span><br><span class="line">        System.out.println(<span class="string">"file found at path: "</span> + file.toAbsolutePath());</span><br><span class="line">        <span class="keyword">return</span> FileVisitResult.TERMINATE;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> FileVisitResult.CONTINUE;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125; <span class="keyword">catch</span>(IOException e)&#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>递归删除目录</strong></p>
+<p>它Files.walkFileTree()还可用于删除包含其中所有文件和子目录的目录。该Files.delete()方法仅删除目录为空的目录。通过遍历所有目录并删除visitFile()每个目录中的所有文件（内部），然后删除目录本身（内部postVisitDirectory()），您可以删除包含所有子目录和文件的目录。这是一个递归目录删除示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Path rootPath = Paths.get(<span class="string">"data/to-delete"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  Files.walkFileTree(rootPath, <span class="keyword">new</span> SimpleFileVisitor&lt;Path&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">visitFile</span><span class="params">(Path file, BasicFileAttributes attrs)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      System.out.println(<span class="string">"delete file: "</span> + file.toString());</span><br><span class="line">      Files.delete(file);</span><br><span class="line">      <span class="keyword">return</span> FileVisitResult.CONTINUE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">postVisitDirectory</span><span class="params">(Path dir, IOException exc)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      Files.delete(dir);</span><br><span class="line">      System.out.println(<span class="string">"delete dir: "</span> + dir.toString());</span><br><span class="line">      <span class="keyword">return</span> FileVisitResult.CONTINUE;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125; <span class="keyword">catch</span>(IOException e)&#123;</span><br><span class="line">  e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Additional-Methods-in-the-Files-Class"><a href="#Additional-Methods-in-the-Files-Class" class="headerlink" title="Additional Methods in the Files Class"></a>Additional Methods in the Files Class</h2><p>本java.nio.file.Files类包含用于创建符号链接，确定文件的大小，设置文件权限等，检查出的的JavaDoc其他许多有用的功能，如功能 java.nio.file.Files类有关这些方法的详细信息。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java-nio/">Java nio</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java-nio干货系列/">Java nio干货系列</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2019/01/20/nio-files/" data-title="Java NIO系列（十四） Java NIO Files | leo&#39;s blog" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2019/01/20/nio-path/" title="Java NIO系列（十三） Java NIO路径">
+ <strong>下一篇：</strong><br> 
+ <span>Java NIO系列（十三） Java NIO路径
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-exists"><span class="toc-number">1.</span> <span class="toc-text">Files.exists()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-createDirectory"><span class="toc-number">2.</span> <span class="toc-text">Files.createDirectory()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-copy"><span class="toc-number">3.</span> <span class="toc-text">Files.copy()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-move"><span class="toc-number">4.</span> <span class="toc-text">Files.move()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-delete"><span class="toc-number">5.</span> <span class="toc-text">Files.delete()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files-walkFileTree"><span class="toc-number">6.</span> <span class="toc-text">Files.walkFileTree()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Additional-Methods-in-the-Files-Class"><span class="toc-number">7.</span> <span class="toc-text">Additional Methods in the Files Class</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="fishmc" data-theme="medium"></div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+</div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Java-nio/" title="Java nio">Java nio<sup>14</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java-nio干货系列/" title="Java nio干货系列">Java nio干货系列<sup>14</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">归档</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">14</span></li></ul>
+  </div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">标签云</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/Java-nio干货系列/" style="font-size: 10px;">Java nio干货系列</a>
+    </div>
+  </div>
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer">
+	
+	<div class="line">
+		<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','E3pD9ihe8Zxwe-X2iwe_','2.0.0');
+</script>
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 程序员上辈子都是折翼的天使 <br>
+			This is my blog,Try to do better.</p>
+	</section>
+	 
+	<div class="social-font">
+		
+		
+		<a href="https://github.com/fishmc" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:fishmcleo@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2019
+		
+		<a href="/about" target="_blank" title="leo">leo</a>
+		
+
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'), //侧边栏
+      c = $('.closeaside'),//隐藏侧边栏
+      o = $('.openaside');//显示侧边栏
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    $('#toc.toc-aside').css('display', 'block').addClass('fadeIn'); //这个是我新加的，修改点
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize();
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+      
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1275990816'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1275990816' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
