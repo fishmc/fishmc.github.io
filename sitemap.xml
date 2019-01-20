@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2019/01/20/nio-nioandio/</loc>
+    
+    <lastmod>2019-01-20T08:04:28.769Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2019/01/20/nio-filechannel/</loc>
+    
+    <lastmod>2019-01-20T08:04:14.277Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2019/01/20/nio-datagramchannel/</loc>
     
     <lastmod>2019-01-20T07:47:35.019Z</lastmod>
@@ -19,13 +33,6 @@
     <loc>http://yoursite.com/2019/01/20/nio-serversocketchannel/</loc>
     
     <lastmod>2019-01-20T07:27:48.853Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2019/01/20/nio-filechannel/</loc>
-    
-    <lastmod>2019-01-20T05:23:55.201Z</lastmod>
     
   </url>
   
