@@ -4,28 +4,25 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   
-    <title>Java NIO系列（四） Scatter/Gather | leo&#39;s blog</title>
+    <title>Java NIO系列（八） SocketChannel | leo&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="leo">
     
 
     
-    <meta name="description" content="Scatter/Gather  原文链接 Java NIO开始支持scatter/gather，scatter/gather用于描述从Channel（译者注：Channel在中文经常翻译为通道）中读取或者写入到Channel的操作。 分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，Channel将从Channel中读取的数据“分散（scatte">
+    <meta name="description" content="SocketChannel  原文链接 Java NIO中的SocketChannel是一个连接到TCP网络套接字的通道。可以通过以下2种方式创建SocketChannel：  打开一个SocketChannel并连接到互联网上的某台服务器。 一个新连接到达ServerSocketChannel时，会创建一个SocketChannel。  打开 SocketChannel 下面是SocketCh">
 <meta name="keywords" content="Java nio干货系列">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java NIO系列（四） Scatter&#x2F;Gather">
-<meta property="og:url" content="http://yoursite.com/2019/01/20/nio-Scatter-Gather/index.html">
+<meta property="og:title" content="Java NIO系列（八） SocketChannel">
+<meta property="og:url" content="http://yoursite.com/2019/01/20/nio-sockerchannel/index.html">
 <meta property="og:site_name" content="leo&#39;s blog">
-<meta property="og:description" content="Scatter/Gather  原文链接 Java NIO开始支持scatter/gather，scatter/gather用于描述从Channel（译者注：Channel在中文经常翻译为通道）中读取或者写入到Channel的操作。 分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，Channel将从Channel中读取的数据“分散（scatte">
+<meta property="og:description" content="SocketChannel  原文链接 Java NIO中的SocketChannel是一个连接到TCP网络套接字的通道。可以通过以下2种方式创建SocketChannel：  打开一个SocketChannel并连接到互联网上的某台服务器。 一个新连接到达ServerSocketChannel时，会创建一个SocketChannel。  打开 SocketChannel 下面是SocketCh">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://fishmc.github.io/img/javanio/scatter.png">
-<meta property="og:image" content="https://fishmc.github.io/img/javanio/gather.png">
-<meta property="og:updated_time" content="2019-01-20T04:18:45.395Z">
+<meta property="og:updated_time" content="2019-01-20T05:22:45.881Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java NIO系列（四） Scatter&#x2F;Gather">
-<meta name="twitter:description" content="Scatter/Gather  原文链接 Java NIO开始支持scatter/gather，scatter/gather用于描述从Channel（译者注：Channel在中文经常翻译为通道）中读取或者写入到Channel的操作。 分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，Channel将从Channel中读取的数据“分散（scatte">
-<meta name="twitter:image" content="https://fishmc.github.io/img/javanio/scatter.png">
+<meta name="twitter:title" content="Java NIO系列（八） SocketChannel">
+<meta name="twitter:description" content="SocketChannel  原文链接 Java NIO中的SocketChannel是一个连接到TCP网络套接字的通道。可以通过以下2种方式创建SocketChannel：  打开一个SocketChannel并连接到互联网上的某台服务器。 一个新连接到达ServerSocketChannel时，会创建一个SocketChannel。  打开 SocketChannel 下面是SocketCh">
 
     
     <link rel="alternative" href="/atom.xml" title="leo&#39;s blog" type="application/atom+xml">
@@ -88,14 +85,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2019/01/20/nio-Scatter-Gather/" title="Java NIO系列（四） Scatter/Gather" itemprop="url">Java NIO系列（四） Scatter/Gather</a>
+      <a href="/2019/01/20/nio-sockerchannel/" title="Java NIO系列（八） SocketChannel" itemprop="url">Java NIO系列（八） SocketChannel</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="leo" target="_blank" itemprop="author">leo</a>
 		
   </p><p class="article-time">
-    <time datetime="2019-01-20T04:05:36.000Z" itemprop="datePublished"> 发表于 2019-01-20</time>
+    <time datetime="2019-01-20T05:15:25.000Z" itemprop="datePublished"> 发表于 2019-01-20</time>
     
   </p>
 </header>
@@ -104,33 +101,40 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#非阻塞模式"><span class="toc-number">1.</span> <span class="toc-text">非阻塞模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#非阻塞模式与选择器"><span class="toc-number">2.</span> <span class="toc-text">非阻塞模式与选择器</span></a></li></ol>
 		
 		</div>
 		
 		<blockquote>
-<p>Scatter/Gather</p>
+<p>SocketChannel</p>
 </blockquote>
 <p><a href="http://tutorials.jenkov.com/java-nio/overview.html" target="_blank" rel="noopener">原文链接</a></p>
-<p>Java NIO开始支持scatter/gather，scatter/gather用于描述从Channel（译者注：Channel在中文经常翻译为通道）中读取或者写入到Channel的操作。</p>
-<p>分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，Channel将从Channel中读取的数据“分散（scatter）”到多个Buffer中。</p>
-<p>聚集（gather）写入Channel是指在写操作时将多个buffer的数据写入同一个Channel，因此，Channel 将多个Buffer中的数据“聚集（gather）”后发送到Channel。</p>
-<p>scatter / gather经常用于需要将传输的数据分开处理的场合，例如传输一个由消息头和消息体组成的消息，你可能会将消息体和消息头分散到不同的buffer中，这样你可以方便的处理消息头和消息体。</p>
-<p><strong>Scattering Reads</strong><br>Scattering Reads是指数据从一个channel读取到多个buffer中。如下图描述：</p>
-<center><img src="https://fishmc.github.io/img/javanio/scatter.png" alt=""></center>
-
-<p>代码示例如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer header = ByteBuffer.allocate(<span class="number">128</span>);</span><br><span class="line">ByteBuffer body   = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">ByteBuffer[] bufferArray = &#123; header, body &#125;;</span><br><span class="line"></span><br><span class="line">channel.read(bufferArray);</span><br></pre></td></tr></table></figure>
-<p>注意buffer首先被插入到数组，然后再将数组作为channel.read() 的输入参数。read()方法按照buffer在数组中的顺序将从channel中读取的数据写入到buffer，当一个buffer被写满后，channel紧接着向另一个buffer中写。</p>
-<p>Scattering Reads在移动下一个buffer前，必须填满当前的buffer，这也意味着它不适用于动态消息(译者注：消息大小不固定)。换句话说，如果存在消息头和消息体，消息头必须完成填充（例如 128byte），Scattering Reads才能正常工作。</p>
-<p><strong>Gathering Writes</strong></p>
-<p>Gathering Writes是指数据从多个buffer写入到同一个channel。如下图描述：</p>
-<center><img src="https://fishmc.github.io/img/javanio/gather.png" alt=""></center>
-
-
-<p>代码示例如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer header = ByteBuffer.allocate(<span class="number">128</span>);</span><br><span class="line">ByteBuffer body   = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//write data into buffers</span></span><br><span class="line"></span><br><span class="line">ByteBuffer[] bufferArray = &#123; header, body &#125;;</span><br><span class="line"></span><br><span class="line">channel.write(bufferArray);</span><br></pre></td></tr></table></figure>
-<p>buffers数组是write()方法的入参，write()方法会按照buffer在数组中的顺序，将数据写入到channel，注意只有position和limit之间的数据才会被写入。因此，如果一个buffer的容量为128byte，但是仅仅包含58byte的数据，那么这58byte的数据将被写入到channel中。因此与Scattering Reads相反，Gathering Writes能较好的处理动态消息。</p>
+<p>Java NIO中的SocketChannel是一个连接到TCP网络套接字的通道。可以通过以下2种方式创建SocketChannel：</p>
+<ol>
+<li>打开一个SocketChannel并连接到互联网上的某台服务器。</li>
+<li>一个新连接到达ServerSocketChannel时，会创建一个SocketChannel。</li>
+</ol>
+<p><strong>打开 SocketChannel</strong></p>
+<p>下面是SocketChannel的打开方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SocketChannel socketChannel = SocketChannel.open();</span><br><span class="line">socketChannel.connect(<span class="keyword">new</span> InetSocketAddress(<span class="string">"https://fishmc.github.io"</span>, <span class="number">80</span>));</span><br></pre></td></tr></table></figure>
+<p><strong>关闭 SocketChannel</strong></p>
+<p>当用完SocketChannel之后调用SocketChannel.close()关闭SocketChannel：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socketChannel.close();</span><br></pre></td></tr></table></figure>
+<p><strong>从 SocketChannel 读取数据</strong></p>
+<p>要从SocketChannel中读取数据，调用一个read()的方法之一。以下是例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer buf = ByteBuffer.allocate(<span class="number">48</span>);</span><br><span class="line"><span class="keyword">int</span> bytesRead = socketChannel.read(buf);</span><br></pre></td></tr></table></figure>
+<p>首先，分配一个Buffer。从SocketChannel读取到的数据将会放到这个Buffer中。<br>然后，调用SocketChannel.read()。该方法将数据从SocketChannel 读到Buffer中。read()方法返回的int值表示读了多少字节进Buffer里。如果返回的是-1，表示已经读到了流的末尾（连接关闭了）。</p>
+<p><strong>写入 SocketChannel</strong></p>
+<p>写数据到SocketChannel用的是SocketChannel.write()方法，该方法以一个Buffer作为参数。示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String newData = <span class="string">"New String to write to file..."</span> + System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">ByteBuffer buf = ByteBuffer.allocate(<span class="number">48</span>);</span><br><span class="line">buf.clear();</span><br><span class="line">buf.put(newData.getBytes());</span><br><span class="line"></span><br><span class="line">buf.flip();</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(buf.hasRemaining()) &#123;</span><br><span class="line">    channel.write(buf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意SocketChannel.write()方法的调用是在一个while循环中的。Write()方法无法保证能写多少字节到SocketChannel。所以，我们重复调用write()直到Buffer没有要写的字节为止。</p>
+<h2 id="非阻塞模式"><a href="#非阻塞模式" class="headerlink" title="非阻塞模式"></a>非阻塞模式</h2><p>可以设置 SocketChannel 为非阻塞模式（non-blocking mode）.设置之后，就可以在异步模式下调用connect(), read() 和write()了。</p>
+<p><strong>connect()</strong></p>
+<p>如果SocketChannel在非阻塞模式下，此时调用connect()，该方法可能在连接建立之前就返回了。为了确定连接是否建立，可以调用finishConnect()的方法。像这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">socketChannel.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line">socketChannel.connect(<span class="keyword">new</span> InetSocketAddress(<span class="string">"https://fishmc.github.io"</span>, <span class="number">80</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(! socketChannel.finishConnect() )&#123;</span><br><span class="line">    <span class="comment">//wait, or do something else...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>write()</strong><br>非阻塞模式下，write()方法在尚未写出任何内容时可能就返回了。所以需要在循环中调用write()。前面已经有例子了，这里就不赘述了。</p>
+<p><strong>read()</strong><br>非阻塞模式下,read()方法在尚未读取到任何数据时可能就返回了。所以需要关注它的int返回值，它会告诉你读取了多少字节。</p>
+<h2 id="非阻塞模式与选择器"><a href="#非阻塞模式与选择器" class="headerlink" title="非阻塞模式与选择器"></a>非阻塞模式与选择器</h2><p>非阻塞模式与选择器搭配会工作的更好，通过将一或多个SocketChannel注册到Selector，可以询问选择器哪个通道已经准备好了读取，写入等。Selector与SocketChannel的搭配使用会在后面详讲。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -153,7 +157,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2019/01/20/nio-Scatter-Gather/" data-title="Java NIO系列（四） Scatter/Gather | leo&#39;s blog" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2019/01/20/nio-sockerchannel/" data-title="Java NIO系列（八） SocketChannel | leo&#39;s blog" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -166,19 +170,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev">
- <a href="/2019/01/20/nio-transfer/" title="Java NIO系列（五） 通道之间的数据传输">
-  <strong>上一篇：</strong><br>
-  <span>
-  Java NIO系列（五） 通道之间的数据传输</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2019/01/20/nio-Buffer/" title="Java NIO系列（三） Buffer">
+<a href="/2019/01/20/nio-filechannel/" title="Java NIO系列（七） FileChannel">
  <strong>下一篇：</strong><br> 
- <span>Java NIO系列（三） Buffer
+ <span>Java NIO系列（七） FileChannel
 </span>
 </a>
 </div>
@@ -195,7 +191,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#非阻塞模式"><span class="toc-number">1.</span> <span class="toc-text">非阻塞模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#非阻塞模式与选择器"><span class="toc-number">2.</span> <span class="toc-text">非阻塞模式与选择器</span></a></li></ol>
  
   </div>
 
